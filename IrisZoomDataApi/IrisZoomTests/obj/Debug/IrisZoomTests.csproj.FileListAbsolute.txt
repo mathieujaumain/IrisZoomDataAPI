@@ -1,0 +1,9 @@
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\data\NDF_Win.dat
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\IrisZoomTests.dll
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\IrisZoomTests.pdb
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\IrisZoomDataApi.dll
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\Ionic.Zlib.dll
+G:\Wargame\edataFileManager-master\IrisZoomTests\bin\Debug\IrisZoomDataApi.pdb
+G:\Wargame\edataFileManager-master\IrisZoomTests\obj\Debug\IrisZoomTests.csprojResolveAssemblyReference.cache
+G:\Wargame\edataFileManager-master\IrisZoomTests\obj\Debug\IrisZoomTests.dll
+G:\Wargame\edataFileManager-master\IrisZoomTests\obj\Debug\IrisZoomTests.pdb
