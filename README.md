@@ -1,6 +1,6 @@
 # IrisZoomDataAPI
 
-Library meant to provide an *whatever* way to query data from NDF binaries and dictionaries files used 
+Library meant to provide a *whatever* way to query data from NDF binaries and dictionaries files used 
 in IrisZoom engine games but more specifically the Wargame serie and, hopefully, the incoming Act of Agression.
 
 ##USE :
@@ -31,4 +31,4 @@ By the way, NbfNul and NdfUnset are treated as null value. Because I decided so.
 Ri... Fork of :
 https://github.com/enohka/moddingSuite
 
-Meaning, it's basically the same data model cleaned from that VMMV nonsense and powered by some nasty helper methods. :D
+Meaning, it's basically the same data model cleansed from that VMMV nonsense and powered by some nasty helper methods. :D
