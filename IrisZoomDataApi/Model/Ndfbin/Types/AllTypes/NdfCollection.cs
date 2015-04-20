@@ -259,12 +259,63 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
         }
 
-        public bool TryGetValueFromPath(string propertyPath, out NdfValueWrapper value)
+       public bool TryGetValueFromPath(string propertyPath, out NdfValueWrapper value)
         {
             string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
             long index = -1;
             int count = pathParts.Length;
             if (count > 0 && long.TryParse( pathParts[0], out index))
+            {
+                NdfValueWrapper val = null;
+
+                try { val = this.InnerList[(int)index].Value; }
+                catch { value = null; return false; }
+
+                propertyPath.Replace(pathParts[0] + ".", string.Empty);
+
+                switch (val.Type)
+                {
+                    case NdfType.ObjectReference:
+                        NdfObjectReference reference = val as NdfObjectReference;
+                        return reference.Instance.TryGetValueFromPath(propertyPath, out value);
+
+                    case NdfType.MapList:
+                        NdfMapList mapList = val as NdfMapList;
+                        return mapList.TryGetValueFromPath(propertyPath, out value);
+
+                    case NdfType.List:
+                        NdfCollection list = val as NdfCollection;
+                        return list.TryGetValueFromPath(propertyPath, out value);
+
+                    case Types.NdfType.Unknown:
+                        break;
+                    case Types.NdfType.Unset:
+                        break;
+
+                    default:
+                        value = val;
+                        return true;
+                }
+            }
+            value = null;
+            return false;
+            //throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
+        }
+
+
+        /// <summary>
+        /// TO DO : une fonction spécial pour les listes, de façon à ce que l'on ecrive list[i] au lieu de list.i
+        /// </summary>
+        /// <param name="propertyPath"></param>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetValueFromPath(string propertyPath, int id ,out NdfValueWrapper value)
+        {
+            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
+            long index = -1;
+            int count = pathParts.Length;
+            if (count > 0 && long.TryParse(pathParts[0], out index))
             {
                 NdfValueWrapper val = null;
 
