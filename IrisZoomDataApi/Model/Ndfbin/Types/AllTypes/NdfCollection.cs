@@ -11,7 +11,6 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
     {
         private readonly List<CollectionItemValueHolder> _innerList 
             = new List<CollectionItemValueHolder>();
-
         public NdfCollection(long offset)
             : base(NdfType.List, offset)
         {
@@ -304,7 +303,9 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
 
         /// <summary>
-        /// TO DO : une fonction spécial pour les listes, de façon à ce que l'on ecrive list[i] au lieu de list.i
+        /// TODO : une fonction spécial pour les listes, de façon à ce que l'on puisse ecrire list[i] au lieu de list.i
+        /// Pour tout les Trygetvalue, il faut verifier que que pathParts[0] contiennent un pattern : *[0-9] representant un index. 
+        /// Puis il faut appeller cette fonction avec cette index.
         /// </summary>
         /// <param name="propertyPath"></param>
         /// <param name="id"></param>
@@ -313,13 +314,13 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
         public bool TryGetValueFromPath(string propertyPath, int id ,out NdfValueWrapper value)
         {
             string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
-            long index = -1;
             int count = pathParts.Length;
-            if (count > 0 && long.TryParse(pathParts[0], out index))
+
+            if (count > 0 && count > id )
             {
                 NdfValueWrapper val = null;
 
-                try { val = this.InnerList[(int)index].Value; }
+                try { val = this.InnerList[id].Value; }
                 catch { value = null; return false; }
 
                 propertyPath.Replace(pathParts[0] + ".", string.Empty);
