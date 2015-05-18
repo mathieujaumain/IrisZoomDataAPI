@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IrisZoomDataApi.BL
 {
     /// <summary>
-    /// HELL YEAH !
+    /// Read string
     /// </summary>
     public class NdfQueryReader
     {
@@ -19,18 +19,21 @@ namespace IrisZoomDataApi.BL
         }
 
         /// <summary>
-        /// Return the next step of the query.
+        ///     Return the next step of the query. Sounds good.
         /// </summary>
         /// <param name="query"></param>
-        /// <returns></returns>
+        /// <param name="rest"></param>
+        /// <returns>The string representing the next step inthe query, can be a property name, an empty string or an item index. </returns>
         public string ParseNextStep(string query, out string rest)
         {
             rest = string.Empty;
             string[] parts = query.Split(SEGMENT_SEPARATOR);
-
-            string next = parts[0];
-
-            rest = query.Substring(next.Length + 1);
+            string next = string.Empty;
+            if (parts.Length > 0)
+            {
+                next = parts[0];
+                rest = query.Substring(next.Length + 1);
+            }
 
             string[] listPart = next.Split(INDEX_SEPARATORS);
             if(listPart.Length > 1)
@@ -38,6 +41,7 @@ namespace IrisZoomDataApi.BL
                 next = listPart[0];
                 rest = listPart[1] + "." + rest;
             }
+        
 
             return next;
         }
