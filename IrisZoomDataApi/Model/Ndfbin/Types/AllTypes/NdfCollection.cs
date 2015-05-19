@@ -226,118 +226,64 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
         #endregion
 
-        public  NdfValueWrapper getValueFromPath(string propertyPath)
+        public  NdfValueWrapper GetValueFromQuery(string query)
         {
-            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
-            long index = -1;
-            int count = pathParts.Length;
-            if (count > 0 && long.TryParse( pathParts[0], out index))
-            {
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(query, out rest);
 
+            long index = -1;
+            if (long.TryParse(next, out index))
+            {
                 NdfValueWrapper val = this.InnerList[(int) index].Value;
-                propertyPath.Replace(pathParts[0] + ".", string.Empty);
+
                 switch (val.Type)
                 {
                     case NdfType.ObjectReference:
                         NdfObjectReference reference = val as NdfObjectReference;
-                        return reference.Instance.GetValueFromPath(propertyPath);
+                        return reference.Instance.GetValueFromQuery(rest);
 
                     case NdfType.MapList:
                         NdfMapList mapList = val as NdfMapList;
-                        return mapList.getValueFromPath(propertyPath);
+                        return mapList.GetValueFromQuery(rest);
 
                     case NdfType.List:
                         NdfCollection list = val as NdfCollection;
-                        return list.getValueFromPath(propertyPath);
+                        return list.GetValueFromQuery(rest);
 
                     default:
                         return val;
                 }
             }
 
-            throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
+            throw (new Exception("Something went wrong with this path: " + query != string.Empty ? query : "empty path"));
         }
 
-       public bool TryGetValueFromPath(string propertyPath, out NdfValueWrapper value)
-        {
-            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
+       public bool TryGetValueFromQuery(string query, out NdfValueWrapper value)
+       {
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(query, out rest);
+
             long index = -1;
-            int count = pathParts.Length;
-            if (count > 0 && long.TryParse( pathParts[0], out index))
+            if (long.TryParse(next, out index))
             {
                 NdfValueWrapper val = null;
 
                 try { val = this.InnerList[(int)index].Value; }
                 catch { value = null; return false; }
 
-                propertyPath.Replace(pathParts[0] + ".", string.Empty);
-
                 switch (val.Type)
                 {
                     case NdfType.ObjectReference:
                         NdfObjectReference reference = val as NdfObjectReference;
-                        return reference.Instance.TryGetValueFromPath(propertyPath, out value);
+                        return reference.Instance.TryGetValueFromQuery(rest, out value);
 
                     case NdfType.MapList:
                         NdfMapList mapList = val as NdfMapList;
-                        return mapList.TryGetValueFromPath(propertyPath, out value);
+                        return mapList.TryGetValueFromQuery(rest, out value);
 
                     case NdfType.List:
                         NdfCollection list = val as NdfCollection;
-                        return list.TryGetValueFromPath(propertyPath, out value);
-
-                    case Types.NdfType.Unknown:
-                        break;
-                    case Types.NdfType.Unset:
-                        break;
-
-                    default:
-                        value = val;
-                        return true;
-                }
-            }
-            value = null;
-            return false;
-            //throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
-        }
-
-
-        /// <summary>
-        /// TODO : une fonction spécial pour les listes, de façon à ce que l'on puisse ecrire list[i] au lieu de list.i
-        /// Pour tout les Trygetvalue, il faut verifier que que pathParts[0] contiennent un pattern : *[0-9] representant un index. 
-        /// Puis il faut appeller cette fonction avec cette index.
-        /// </summary>
-        /// <param name="propertyPath"></param>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public bool TryGetValueFromPath(string propertyPath, int id ,out NdfValueWrapper value)
-        {
-            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
-            int count = pathParts.Length;
-
-            if (count > 0 && count > id )
-            {
-                NdfValueWrapper val = null;
-
-                try { val = this.InnerList[id].Value; }
-                catch { value = null; return false; }
-
-                propertyPath.Replace(pathParts[0] + ".", string.Empty);
-
-                switch (val.Type)
-                {
-                    case NdfType.ObjectReference:
-                        NdfObjectReference reference = val as NdfObjectReference;
-                        return reference.Instance.TryGetValueFromPath(propertyPath, out value);
-
-                    case NdfType.MapList:
-                        NdfMapList mapList = val as NdfMapList;
-                        return mapList.TryGetValueFromPath(propertyPath, out value);
-
-                    case NdfType.List:
-                        NdfCollection list = val as NdfCollection;
-                        return list.TryGetValueFromPath(propertyPath, out value);
+                        return list.TryGetValueFromQuery(rest, out value);
 
                     case Types.NdfType.Unknown:
                         break;

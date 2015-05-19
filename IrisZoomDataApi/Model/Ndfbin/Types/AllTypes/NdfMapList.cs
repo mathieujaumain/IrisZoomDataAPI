@@ -71,59 +71,59 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             return false;
         }
 
-        public NdfValueWrapper getValueFromPath(string propertyPath)
+        public NdfValueWrapper GetValueFromQuery(string query)
         {
-            string[] pathParts = propertyPath.Split(new string[]{"."}, System.StringSplitOptions.RemoveEmptyEntries);
-            int count = pathParts.Length;
-            if (count > 0)
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(query, out rest);
+
+            if (!string.IsNullOrEmpty(next))
             {
-                NdfMap nextMap = GetMap(pathParts[0]);
-                propertyPath.Replace(pathParts[0] + ".", string.Empty);
+                NdfMap nextMap = GetMap(next);
                 switch (nextMap.Type)
                 {
                     case NdfType.ObjectReference:
                         NdfObjectReference reference = nextMap.Value as NdfObjectReference;
-                        return reference.Instance.GetValueFromPath(propertyPath);
+                        return reference.Instance.GetValueFromQuery(rest);
 
                     case NdfType.MapList:
                         NdfMapList mapList = nextMap.Value as NdfMapList;
-                        return mapList.getValueFromPath(propertyPath);
+                        return mapList.GetValueFromQuery(rest);
 
                     case NdfType.List:
                         NdfCollection list = nextMap.Value as NdfCollection;
-                        return list.getValueFromPath(propertyPath); // TODO
+                        return list.GetValueFromQuery(rest); // TODO
 
                     default:
                         return nextMap;
                 }
             }
 
-            throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
+            throw (new Exception("Something went wrong with this path: " + query != string.Empty ? query : "empty path"));
         }
 
-        public bool TryGetValueFromPath(string propertyPath, out NdfValueWrapper value)
+        public bool TryGetValueFromQuery(string propertyPath, out NdfValueWrapper value)
         {
-            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
-            int count = pathParts.Length;
-            if (count > 0)
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(propertyPath, out rest);
+
+            if (!string.IsNullOrEmpty(next))
             {
-                NdfMap nextMap = GetMap(pathParts[0]);
-                if (TryGetMap(pathParts[0], out nextMap))
+                NdfMap nextMap;
+                if (TryGetMap(next, out nextMap))
                 {
-                    propertyPath.Replace(pathParts[0] + ".", string.Empty);
                     switch (nextMap.Type)
                     {
                         case NdfType.ObjectReference:
                             NdfObjectReference reference = nextMap.Value as NdfObjectReference;
-                            return reference.Instance.TryGetValueFromPath(propertyPath, out value);
+                            return reference.Instance.TryGetValueFromQuery(rest, out value);
 
                         case NdfType.MapList:
                             NdfMapList mapList = nextMap.Value as NdfMapList;
-                            return mapList.TryGetValueFromPath(propertyPath, out value);
+                            return mapList.TryGetValueFromQuery(rest, out value);
 
                         case NdfType.List:
                             NdfCollection list = nextMap.Value as NdfCollection;
-                            return list.TryGetValueFromPath(propertyPath, out value); // TODO
+                            return list.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.Unknown:
                             break;

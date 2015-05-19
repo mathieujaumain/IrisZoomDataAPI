@@ -43,13 +43,10 @@ namespace IrisZoomDataApi.Model.Ndfbin
         /// <returns></returns>
         public NdfValueWrapper GetValueOfProperty(string propertyName)
         {
-            foreach (NdfPropertyValue propval in PropertyValues)
-            {
-                if (propval.Property.Name == propertyName)
-                {
-                    return propval.Value;
-                }
-            }
+
+            NdfPropertyValue propval = GetProperty(propertyName);
+            if (propval != null)
+                return propval.Value;
             return null;
         }
 
@@ -60,60 +57,55 @@ namespace IrisZoomDataApi.Model.Ndfbin
         /// <returns></returns>
         public NdfPropertyValue GetProperty(string propertyName)
         {
-            foreach (NdfPropertyValue propval in PropertyValues)
-            {
-                if (propval.Property.Name == propertyName)
-                {
-                    return propval;
-                }
-            }
-            return null;
+            return PropertyValues.Find(x => x.Property.Name == propertyName);
         }
 
-        public bool GetProperty(string propName, out NdfPropertyValue value)
+        /// <summary>
+        /// Return true if it succeded getting a property and output it.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public bool TryGetProperty(string propName, out NdfPropertyValue value)
         {
-            foreach (NdfPropertyValue propval in PropertyValues)
-            {
-                if (propval.Property.Name == propName)
-                {
-                    value = propval;
-                    return true;
-                }
-            }
-            value = null;
-            return false;
+            value = GetProperty(propName);
+            return value != null;
         }
 
-        public bool TryGetValueFromPath(string propertyPath, out NdfValueWrapper value)
+        /// <summary>
+        /// Return true if it succeded getting a property from the query and output it.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetValueFromQuery(string query, out NdfValueWrapper value)
         {
-            string[] pathParts = propertyPath.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries);
-            int count = pathParts.Length;
-            if (count > 0)
-            {
-                NdfPropertyValue nextproperty = GetProperty(pathParts[0]);
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(query, out rest);
 
-                if (GetProperty(pathParts[0], out nextproperty))
+            if(!string.IsNullOrEmpty(next))
+            {
+                NdfPropertyValue nextproperty;
+
+                if (TryGetProperty(next, out nextproperty))
                 {
-                    propertyPath.Replace(pathParts[0] + ".", string.Empty);
                     switch (nextproperty.Type)
                     {
                         case Types.NdfType.ObjectReference:
                             NdfObjectReference reference = nextproperty.Value as NdfObjectReference;
-                            return reference.Instance.TryGetValueFromPath(propertyPath, out value);
+                            return reference.Instance.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.MapList:
                             NdfMapList mapList = nextproperty.Value as NdfMapList;
-                            return mapList.TryGetValueFromPath(propertyPath, out value); // TODO
+                            return mapList.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.List:
                             NdfCollection list = nextproperty.Value as NdfCollection;
-                            return list.TryGetValueFromPath(propertyPath, out value); // TODO
+                            return list.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.Unknown :
                             break;
                         case Types.NdfType.Unset:
                             break;
-
 
                         default:
                             value = nextproperty.Value;
@@ -125,12 +117,17 @@ namespace IrisZoomDataApi.Model.Ndfbin
             return false;
         }
 
-
-        public bool TryGetValueFromPath<T>(string propertyPath, out T value) where T : NdfValueWrapper
+        /// <summary>
+        /// Return true if it succeded getting a property from the query and cast it into T, then output it.
+        /// </summary>
+        /// <param name="propertyPath"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetValueFromQuery<T>(string query, out T value) where T : NdfValueWrapper
         {
             NdfValueWrapper val = null;
             value = null;
-            if(TryGetValueFromPath(propertyPath, out val))
+            if (TryGetValueFromQuery(query, out val))
             {
                 value = val as T;
                 if (value != null)
@@ -145,38 +142,37 @@ namespace IrisZoomDataApi.Model.Ndfbin
         /// </summary>
         /// <param name="propertyPath"> Path formated like <ObjectReference>.<ListProperty>.<ListIndex>.<PropertyName> </param>
         /// <returns></returns>
-        public NdfValueWrapper GetValueFromPath(string propertyPath)
+        public NdfValueWrapper GetValueFromQuery(string query)
         {
-            string[] pathParts = propertyPath.Split(new string[]{"."}, System.StringSplitOptions.RemoveEmptyEntries);
-            int count = pathParts.Length;
-            if (count > 0)
+            string rest = string.Empty;
+            string next = NdfQueryReader.ParseNextStep(query, out rest);
+
+            if (!string.IsNullOrEmpty(next))
             {
-                NdfPropertyValue nextproperty = GetProperty(pathParts[0]);
+                NdfPropertyValue nextproperty = GetProperty(next);
                 if (nextproperty == null)
                 {
-                    propertyPath.Replace(pathParts[0] + ".", string.Empty);
                     switch (nextproperty.Type)
                     {
                         case Types.NdfType.ObjectReference:
                             NdfObjectReference reference = nextproperty.Value as NdfObjectReference;
-                            return reference.Instance.GetValueFromPath(propertyPath);
+                            return reference.Instance.GetValueFromQuery(rest);
 
                         case Types.NdfType.MapList:
                             NdfMapList mapList = nextproperty.Value as NdfMapList;
-                            return mapList.getValueFromPath(propertyPath); 
+                            return mapList.GetValueFromQuery(rest); 
 
                         case Types.NdfType.List:
                             NdfCollection list = nextproperty.Value as NdfCollection;
-                            return list.getValueFromPath(propertyPath); 
+                            return list.GetValueFromQuery(rest); 
 
                         default:
                             return nextproperty.Value;
                     }
                 }
-
             }
 
-            throw(new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath:"Empty Path"));
+            throw(new Exception("Something went wrong with this path: " + query != string.Empty ? query:"Empty Path"));
         }
     }
 }

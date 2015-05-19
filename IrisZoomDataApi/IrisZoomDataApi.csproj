@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="BL\EdataManager.cs" />
     <Compile Include="BL\NdfbinManager.cs" />
-    <Compile Include="BL\NdfQueryReader.cs" />
+    <Compile Include="Model\Ndfbin\NdfQueryReader.cs" />
     <Compile Include="BL\TradManager.cs" />
     <Compile Include="Compressing\Compressing.cs" />
     <Compile Include="Model\Edata\EdataContentFile.cs" />

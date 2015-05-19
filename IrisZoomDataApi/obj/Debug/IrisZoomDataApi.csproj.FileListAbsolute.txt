@@ -10,3 +10,9 @@ G:\Wargame\edataFileManager-master\IrisZoomDataApi\obj\Debug\IrisZoomDataApi.pdb
 G:\Wargame\edataFileManager-master\IrisZoomDataApi\bin\Debug\IrisZoomDataApi.dll
 G:\Wargame\edataFileManager-master\IrisZoomDataApi\bin\Debug\IrisZoomDataApi.pdb
 G:\Wargame\edataFileManager-master\IrisZoomDataApi\bin\Debug\Ionic.Zlib.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\obj\Debug\IrisZoomDataApi.csprojResolveAssemblyReference.cache
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\obj\Debug\IrisZoomDataApi.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\obj\Debug\IrisZoomDataApi.pdb
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\bin\Debug\IrisZoomDataApi.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\bin\Debug\IrisZoomDataApi.pdb
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\bin\Debug\Ionic.Zlib.dll
