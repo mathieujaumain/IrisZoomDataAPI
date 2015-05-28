@@ -12,5 +12,10 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
         {
             Type = NdfType.TableStringFile;
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

@@ -15,5 +15,10 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
             return BitConverter.GetBytes(((NdfStringReference)Value).Id);
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

@@ -35,5 +35,6 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
         {
             return string.Format("Vec4: {0}", Utils.ByteArrayToBigEndianHeyByteString(Value));
         }
+
     }
 }

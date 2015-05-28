@@ -35,5 +35,10 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             get { return (Point3D)base.Value; }
             set { base.Value = value; }
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

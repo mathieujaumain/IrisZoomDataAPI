@@ -35,5 +35,6 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             get { return Convert.ToDouble(Value); }
             set { base.Value = value; }
         }
+
     }
 }

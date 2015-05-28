@@ -232,7 +232,7 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             string next = NdfQueryReader.ParseNextStep(query, out rest);
 
             long index = -1;
-            if (long.TryParse(next, out index))
+            if (long.TryParse(next, out index)) // can be  a list of map so we need to find a way to use "next" as a key and (even worst, sometimes a long is a key map)
             {
                 NdfValueWrapper val = this.InnerList[(int) index].Value;
 
@@ -254,11 +254,40 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                         return val;
                 }
             }
+            else
+            {
+                // do a list from the maps of the inner list
+                List<CollectionItemValueHolder> maps = _innerList.FindAll(x => x.Value.Type == NdfType.Map);
+                try
+                {
+                    NdfValueWrapper selectedmap = maps.Find(x => (x.Value as NdfMap).Key.Value.ToString() == next).Value; // wtfits
+
+                    switch (selectedmap.Type)
+                    {
+                        case NdfType.ObjectReference:
+                            NdfObjectReference reference = selectedmap as NdfObjectReference;
+                            return reference.Instance.GetValueFromQuery(rest);
+
+                        case NdfType.MapList:
+                            NdfMapList mapList = selectedmap as NdfMapList;
+                            return mapList.GetValueFromQuery(rest);
+
+                        case NdfType.List:
+                            NdfCollection list = selectedmap as NdfCollection;
+                            return list.GetValueFromQuery(rest);
+
+                        default:
+                            return selectedmap;
+                    }
+
+                }
+                catch {  }
+            }
 
             throw (new Exception("Something went wrong with this path: " + query != string.Empty ? query : "empty path"));
         }
 
-       public bool TryGetValueFromQuery(string query, out NdfValueWrapper value)
+       public bool TryGetValueFromQuery(string query, out NdfValueWrapper value) 
        {
             string rest = string.Empty;
             string next = NdfQueryReader.ParseNextStep(query, out rest);
@@ -295,6 +324,26 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                         return true;
                 }
             }
+            else
+            {
+                // do a list from the maps of the inner list
+                List<CollectionItemValueHolder> maps = _innerList.FindAll(x => x.Value.Type == NdfType.Map);
+                try
+                {
+                    NdfValueWrapper selectedmap = maps.Find(x => (x.Value as NdfMap).Key.Value.ToString() == next).Value; // wat
+
+                    NdfMap mapVal = selectedmap as NdfMap;
+                    MapValueHolder valholder = mapVal.Value as MapValueHolder;
+
+                    value = valholder.Value;
+                    return true;
+                    
+
+                }
+                catch { value = null; return false; }
+            }
+
+
             value = null;
             return false;
             //throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
