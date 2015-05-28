@@ -28,7 +28,8 @@ namespace IrisZoomDataApi.Model.Ndfbin
             if (parts.Length > 0)
             {
                 next = parts[0];
-                rest = query.Substring(next.Length + 1);
+                if(parts.Length > 1)
+                    rest = query.Substring(next.Length + 1);
             }
 
             string[] listPart = next.Split(INDEX_SEPARATORS);

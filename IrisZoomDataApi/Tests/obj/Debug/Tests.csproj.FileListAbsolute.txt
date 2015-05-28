@@ -1,0 +1,8 @@
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\bin\Debug\Tests.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\bin\Debug\Tests.pdb
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\bin\Debug\IrisZoomDataApi.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\bin\Debug\Ionic.Zlib.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\bin\Debug\IrisZoomDataApi.pdb
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\obj\Debug\Tests.dll
+C:\Users\mja\Documents\GitHub\IrisZoomDataAPI\IrisZoomDataApi\Tests\obj\Debug\Tests.pdb
