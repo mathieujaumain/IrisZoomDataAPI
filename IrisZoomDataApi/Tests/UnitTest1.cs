@@ -95,5 +95,20 @@ namespace Tests
             string query = "Modules.TypeUnit.Default";
             Assert.IsTrue(obj.TryGetValueFromQuery<NdfObjectReference>(query, out refef));
         }
+
+        [TestMethod]
+        public void QueryItemList()
+        {
+            EdataManager datamana = new EdataManager(ndffile);
+
+            datamana.ParseEdataFile();
+            NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
+            NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
+            NdfObject obj = claass.Instances[0];
+            NdfObjectReference refef;
+
+            string query = "Modules[0].Default";
+            Assert.IsTrue(obj.TryGetValueFromQuery<NdfObjectReference>(query, out refef));
+        }
     }
 }

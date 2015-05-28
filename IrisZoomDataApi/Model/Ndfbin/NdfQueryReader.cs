@@ -32,7 +32,7 @@ namespace IrisZoomDataApi.Model.Ndfbin
                     rest = query.Substring(next.Length + 1);
             }
 
-            string[] listPart = next.Split(INDEX_SEPARATORS);
+            string[] listPart = next.Split(INDEX_SEPARATORS, System.StringSplitOptions.RemoveEmptyEntries);
             if(listPart.Length > 1)
             {
                 next = listPart[0];

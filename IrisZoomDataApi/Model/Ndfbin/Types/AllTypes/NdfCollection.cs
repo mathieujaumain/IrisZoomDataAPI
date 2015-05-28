@@ -250,6 +250,11 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                         NdfCollection list = val as NdfCollection;
                         return list.GetValueFromQuery(rest);
 
+                    case NdfType.Map:
+                        NdfMap map = val as NdfMap;
+                        return (map.Value as MapValueHolder).Value;
+                       
+
                     default:
                         return val;
                 }
@@ -260,28 +265,15 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                 List<CollectionItemValueHolder> maps = _innerList.FindAll(x => x.Value.Type == NdfType.Map);
                 try
                 {
-                    NdfValueWrapper selectedmap = maps.Find(x => (x.Value as NdfMap).Key.Value.ToString() == next).Value; // wtfits
+                    NdfValueWrapper selectedmap = maps.Find(x => (x.Value as NdfMap).Key.Value.ToString() == next).Value; // wat
 
-                    switch (selectedmap.Type)
-                    {
-                        case NdfType.ObjectReference:
-                            NdfObjectReference reference = selectedmap as NdfObjectReference;
-                            return reference.Instance.GetValueFromQuery(rest);
+                    NdfMap mapVal = selectedmap as NdfMap;
+                    MapValueHolder valholder = mapVal.Value as MapValueHolder;
 
-                        case NdfType.MapList:
-                            NdfMapList mapList = selectedmap as NdfMapList;
-                            return mapList.GetValueFromQuery(rest);
-
-                        case NdfType.List:
-                            NdfCollection list = selectedmap as NdfCollection;
-                            return list.GetValueFromQuery(rest);
-
-                        default:
-                            return selectedmap;
-                    }
-
+                    return valholder.Value;
+                    
                 }
-                catch {  }
+                catch { }
             }
 
             throw (new Exception("Something went wrong with this path: " + query != string.Empty ? query : "empty path"));
@@ -314,6 +306,11 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                         NdfCollection list = val as NdfCollection;
                         return list.TryGetValueFromQuery(rest, out value);
 
+                    case NdfType.Map:
+                        NdfMap map = val as NdfMap;
+                        value = (map.Value as MapValueHolder).Value;
+                        return true;
+
                     case Types.NdfType.Unknown:
                         break;
                     case Types.NdfType.Unset:
@@ -337,8 +334,6 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
                     value = valholder.Value;
                     return true;
-                    
-
                 }
                 catch { value = null; return false; }
             }
