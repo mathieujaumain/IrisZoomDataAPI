@@ -308,8 +308,7 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
                     case NdfType.Map:
                         NdfMap map = val as NdfMap;
-                        value = (map.Value as MapValueHolder).Value;
-                        return true;
+                        return map.TryGetValueFromQuery(rest, out value);
 
                     case Types.NdfType.Unknown:
                         break;

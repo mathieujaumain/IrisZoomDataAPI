@@ -56,5 +56,45 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
         {
             return string.Format("Map: {0} : {1}", Key.Value, ((MapValueHolder)Value).Value);
         }
+
+
+
+        public bool TryGetValueFromQuery(string query, out NdfValueWrapper value)
+        {
+            NdfValueWrapper val = (this.Value as MapValueHolder).Value;
+
+            switch (val.Type)
+            {
+                case NdfType.ObjectReference:
+                    NdfObjectReference reference = val as NdfObjectReference;
+                    return reference.Instance.TryGetValueFromQuery(query, out value);
+
+                case NdfType.MapList:
+                    NdfMapList mapList = val as NdfMapList;
+                    return mapList.TryGetValueFromQuery(query, out value);
+
+                case NdfType.List:
+                    NdfCollection list = val as NdfCollection;
+                    return list.TryGetValueFromQuery(query, out value);
+
+                case NdfType.Map:
+                    NdfMap map = val as NdfMap;
+                    return map.TryGetValueFromQuery(query, out value);
+
+                case Types.NdfType.Unknown:
+                    break;
+                case Types.NdfType.Unset:
+                    break;
+
+                default:
+                    value = val;
+                    return true;
+            }
+            
+
+            value = null;
+            return false;
+            //throw (new Exception("Something went wrong with this path: " + propertyPath != string.Empty ? propertyPath : "empty path"));
+        }
     }
 }

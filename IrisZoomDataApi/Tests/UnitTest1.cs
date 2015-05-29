@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using IrisZoomDataApi;
 using IrisZoomDataApi.Model.Ndfbin;
+using IrisZoomDataApi.Model.Trad;
 using IrisZoomDataApi.Model.Ndfbin.Types.AllTypes;
 
 namespace Tests
@@ -15,7 +16,7 @@ namespace Tests
         string ndffile = @"C:\Users\mja\Documents\perso\mods\NDF_Win.dat";
         
         string trans = @"C:\Users\mja\Documents\perso\mods\ZZ_Win.dat";
-        string transFile = @"pc\localisation\us\gameplay\unit\names\unites.dic";
+        string transFile = "pc\\localisation\\us\\localisation\\unites.dic";
 
 
         [TestMethod]
@@ -109,6 +110,29 @@ namespace Tests
 
             string query = "Modules[0].Default";
             Assert.IsTrue(obj.TryGetValueFromQuery<NdfObjectReference>(query, out refef));
+        }
+
+
+        [TestMethod]
+        public void ReadDictionaryEntry()
+        {
+            EdataManager datamana = new EdataManager(ndffile);
+
+            datamana.ParseEdataFile();
+            NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
+            NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
+            NdfObject obj = claass.Instances[1];
+            NdfLocalisationHash refef;
+            string query = "Modules[0].Default.DescriptionHintToken";
+            Assert.IsTrue(obj.TryGetValueFromQuery<NdfLocalisationHash>(query, out refef));
+            
+
+            EdataManager dic = new EdataManager(trans);
+            dic.ParseEdataFile();
+            TradManager trad = dic.ReadDictionary(transFile);
+            string output = string.Empty;
+            Assert.IsTrue(trad.TryGetString(refef.Value, out output));
+
         }
     }
 }
