@@ -688,13 +688,7 @@ namespace IrisZoomDataApi
 
         public NdfClass GetClass(string className)
         {
-            foreach(NdfClass clas in Classes){
-                if (clas.Name == className)
-                {
-                    return clas;
-                }
-            }
-            return null;
+            return Classes.Find(x => x.Name == className);
         }
 
     }

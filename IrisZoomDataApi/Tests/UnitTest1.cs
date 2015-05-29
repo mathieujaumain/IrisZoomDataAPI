@@ -131,7 +131,7 @@ namespace Tests
             dic.ParseEdataFile();
             TradManager trad = dic.ReadDictionary(transFile);
             string output = string.Empty;
-            Assert.IsTrue(trad.TryGetString(refef.Value, out output));
+            Assert.IsTrue(trad.TryGetString(refef.Value, out output)); // get LOSAT's description
 
         }
     }

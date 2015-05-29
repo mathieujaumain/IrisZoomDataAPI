@@ -392,16 +392,8 @@ namespace IrisZoomDataApi
 
         public NdfbinManager ReadNdfbin(string fileName)
         {
-            EdataContentFile thisFile = null;
-            foreach (EdataContentFile file in Files)
-            {
-                if (file.Path == fileName)
-                {
-                    thisFile = file;
-                    break;
-                }
+            EdataContentFile thisFile = Files.Find(x => x.Path == fileName);
 
-            }
             if (thisFile == null) throw new Exception("No content file has that name in these data : " + fileName);
             NdfbinManager ndfbin = new NdfbinManager(GetRawData(thisFile));
             ndfbin.Initialize();
@@ -411,15 +403,7 @@ namespace IrisZoomDataApi
 
         public TradManager ReadDictionary(string fileName)
         {
-            EdataContentFile thisFile = null;
-            foreach (EdataContentFile file in Files)
-            {
-                if (file.Path == fileName)
-                {
-                    thisFile = file;
-                    break;
-                }
-            }
+            EdataContentFile thisFile = Files.Find(x => x.Path == fileName);
             if (thisFile == null) throw new Exception("No content file has that name in these data : " + fileName);
             return new TradManager(GetRawData(thisFile));
         }
