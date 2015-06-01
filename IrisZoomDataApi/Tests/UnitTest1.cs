@@ -98,20 +98,19 @@ namespace Tests
         }
 
         [TestMethod]
-        public void QueryItemList()
+        public void QueryListItem()
         {
             EdataManager datamana = new EdataManager(ndffile);
 
             datamana.ParseEdataFile();
             NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
             NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
-            NdfObject obj = claass.Instances[0];
+            NdfObject obj = claass.Instances[1];
             NdfObjectReference refef;
 
             string query = "Modules[0].Default";
             Assert.IsTrue(obj.TryGetValueFromQuery<NdfObjectReference>(query, out refef));
         }
-
 
         [TestMethod]
         public void ReadDictionaryEntry()

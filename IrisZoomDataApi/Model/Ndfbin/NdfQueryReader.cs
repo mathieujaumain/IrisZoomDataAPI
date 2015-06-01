@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IrisZoomDataApi.Model.Ndfbin
 {
     /// <summary>
-    /// Read string
+    /// Read query string
     /// </summary>
     public class NdfQueryReader
     {
@@ -35,8 +35,8 @@ namespace IrisZoomDataApi.Model.Ndfbin
             string[] listPart = next.Split(INDEX_SEPARATORS, System.StringSplitOptions.RemoveEmptyEntries);
             if(listPart.Length > 1)
             {
-                next = listPart[0];
-                rest = listPart[1] + "." + rest;
+                next = listPart[0]; 
+                rest = "[" + listPart[1] + "]" + "." + rest;
             }
             return next;
         }

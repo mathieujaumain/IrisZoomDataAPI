@@ -88,18 +88,35 @@ namespace IrisZoomDataApi.Model.Ndfbin
 
                 if (TryGetProperty(next, out nextproperty))
                 {
+                    
+
                     switch (nextproperty.Type)
                     {
                         case Types.NdfType.ObjectReference:
                             NdfObjectReference reference = nextproperty.Value as NdfObjectReference;
+                            if (string.IsNullOrEmpty(rest))
+                            {
+                                value = reference;
+                                return true;
+                            }
                             return reference.Instance.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.MapList:
                             NdfMapList mapList = nextproperty.Value as NdfMapList;
+                            if (string.IsNullOrEmpty(rest))
+                            {
+                                value = mapList;
+                                return true;
+                            }
                             return mapList.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.List:
                             NdfCollection list = nextproperty.Value as NdfCollection;
+                            if (string.IsNullOrEmpty(rest))
+                            {
+                                value = list;
+                                return true;
+                            }
                             return list.TryGetValueFromQuery(rest, out value);
 
                         case Types.NdfType.Unknown :

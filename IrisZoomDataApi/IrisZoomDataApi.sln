@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrisZoomDataApi", "IrisZoom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{699AE2DE-D4F5-4DB8-B9AC-269280EADC1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTest", "..\PerformanceTest\PerformanceTest.csproj", "{553D8187-A9D0-4B07-BA25-F5ABC109FE2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +23,15 @@ Global
 		{699AE2DE-D4F5-4DB8-B9AC-269280EADC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{699AE2DE-D4F5-4DB8-B9AC-269280EADC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{699AE2DE-D4F5-4DB8-B9AC-269280EADC1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{553D8187-A9D0-4B07-BA25-F5ABC109FE2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{553D8187-A9D0-4B07-BA25-F5ABC109FE2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{553D8187-A9D0-4B07-BA25-F5ABC109FE2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{553D8187-A9D0-4B07-BA25-F5ABC109FE2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

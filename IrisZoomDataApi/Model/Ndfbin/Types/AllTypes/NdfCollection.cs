@@ -284,8 +284,16 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             string rest = string.Empty;
             string next = NdfQueryReader.ParseNextStep(query, out rest);
 
+           // verify next is in the from "[ i ]"
+           bool isIndex = false;
+            string[] parts = next.Split(new string[] { "[", "]" }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length > 0)
+            {
+                isIndex = true;
+            }
+
             long index = -1;
-            if (long.TryParse(next, out index))
+            if (isIndex && long.TryParse(parts[0], out index))
             {
                 NdfValueWrapper val = null;
 
