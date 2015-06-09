@@ -1,4 +1,5 @@
 PerformanceTest/obj/*
+PerformanceTest/bin/*
 IrisZoomDataApi/obj/*
 IrisZoomDataApi/bin/*
 IrisZoomDataApi/Tests/obj/*
@@ -7,3 +8,4 @@ IrisZoomDataApi/Tests/bin/*
 *.dll
 *.dll
 *.cache
+*.dll

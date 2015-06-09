@@ -147,7 +147,7 @@ namespace Tests
 
             string filename = @"pc\texture\assets\2d\interface\common\unitsicons\us\javelin_at_soldier.tgv";
             Bitmap bitmap = null;
-            Assert.IsTrue(manager.TryToExportTgv(filename, out bitmap));
+            Assert.IsTrue(manager.TryToLoadTgv(filename, out bitmap));
             Assert.IsNotNull(bitmap);
         }
     }

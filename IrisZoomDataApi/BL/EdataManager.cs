@@ -46,6 +46,14 @@ namespace IrisZoomDataApi
             protected set;
         }
 
+
+        /// <summary>
+        /// Creates a new Instance of a EdataManager.
+        /// </summary>
+        public EdataManager()
+        {
+        }
+
         /// <summary>
         /// Creates a new Instance of a EdataManager.
         /// </summary>
@@ -90,6 +98,16 @@ namespace IrisZoomDataApi
             //ResolveFileTypes();
         }
 
+
+        public static EdataManager ParseRawData(byte[] rawdata)
+        {
+            EdataManager result = new EdataManager();
+            result.Header = result.ReadEdataHeader(rawdata);
+            result.Files = result.ReadEdatDictionary(rawdata);
+
+            return result;
+        }
+
         protected void ResolveFileType(FileStream fs, EdataContentFile file)
         {
             // save original offset
@@ -104,6 +122,22 @@ namespace IrisZoomDataApi
 
             // set offset back to original
             fs.Seek(origOffset, SeekOrigin.Begin);
+        }
+
+        protected void ResolveFileType(MemoryStream ms, EdataContentFile file)
+        {
+            // save original offset
+            var origOffset = ms.Position;
+
+            ms.Seek(file.Offset + Header.FileOffset, SeekOrigin.Begin);
+
+            var headerBuffer = new byte[12];
+            ms.Read(headerBuffer, 0, headerBuffer.Length);
+
+            file.FileType = GetFileTypeFromHeaderData(headerBuffer);
+
+            // set offset back to original
+            ms.Seek(origOffset, SeekOrigin.Begin);
         }
 
         public static EdataFileType GetFileTypeFromHeaderData(byte[] headerData)
@@ -156,6 +190,35 @@ namespace IrisZoomDataApi
                 header.FileOffset = BitConverter.ToInt32(buffer, 0);
 
                 fileStream.Read(buffer, 0, 4);
+                header.FileLengh = BitConverter.ToInt32(buffer, 0);
+            }
+
+            return header;
+        }
+
+        /// <summary>
+        /// Reads the header of raw bytes.
+        /// </summary>
+        /// <returns>A instance of the current header.</returns>
+        protected EdataHeader ReadEdataHeader(byte[] rawData)
+        {
+            var header = new EdataHeader(this);
+
+            using (MemoryStream stream = new MemoryStream(rawData, 0, rawData.Length))
+            {
+                var buffer = new byte[4];
+
+                stream.Seek(0x19, SeekOrigin.Begin);
+                stream.Read(buffer, 0, 4);
+                header.DirOffset = BitConverter.ToInt32(buffer, 0);
+
+                stream.Read(buffer, 0, 4);
+                header.DirLengh = BitConverter.ToInt32(buffer, 0);
+
+                stream.Read(buffer, 0, 4);
+                header.FileOffset = BitConverter.ToInt32(buffer, 0);
+
+                stream.Read(buffer, 0, 4);
                 header.FileLengh = BitConverter.ToInt32(buffer, 0);
             }
 
@@ -238,6 +301,91 @@ namespace IrisZoomDataApi
 
                         if ((dir.Name.Length + 1) % 2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
+
+                        dirs.Add(dir);
+                    }
+                }
+            }
+            return files;
+        }
+
+
+        /// <summary>
+        /// The only tricky part about that algorythm is that you have to skip one byte if the length of the File/Dir name PLUS nullbyte is an odd number.
+        /// </summary>
+        /// <returns>A Collection of the Files found in the Dictionary</returns>
+        protected List<EdataContentFile> ReadEdatDictionary(byte[] rawdata)
+        {
+            var files = new List<EdataContentFile>();
+            //Current dirs
+            var dirs = new List<EdataDir>();
+            var endings = new List<long>();
+
+            using (MemoryStream stream = new MemoryStream(rawdata, 0, rawdata.Length))
+            {
+                stream.Seek(Header.DirOffset, SeekOrigin.Begin);
+
+                long dirEnd = Header.DirOffset + Header.DirLengh;
+                uint id = 0;
+
+                while (stream.Position < dirEnd)
+                {
+                    var buffer = new byte[4];
+                    stream.Read(buffer, 0, 4);
+                    int fileGroupId = BitConverter.ToInt32(buffer, 0);
+
+                    if (fileGroupId == 0)
+                    {
+                        var file = new EdataContentFile(this);
+                        stream.Read(buffer, 0, 4);
+                        file.FileEntrySize = BitConverter.ToInt32(buffer, 0);
+
+                        buffer = new byte[8];
+                        stream.Read(buffer, 0, buffer.Length);
+                        file.Offset = BitConverter.ToInt64(buffer, 0);
+
+                        stream.Read(buffer, 0, buffer.Length);
+                        file.Size = BitConverter.ToInt64(buffer, 0);
+
+                        var checkSum = new byte[16];
+                        stream.Read(checkSum, 0, checkSum.Length);
+                        file.Checksum = checkSum;
+
+                        file.Name = Utils.ReadString(stream);
+                        file.Path = MergePath(dirs, file.Name);
+
+                        if ((file.Name.Length + 1) % 2 == 1)
+                            stream.Seek(1, SeekOrigin.Current);
+
+                        file.Id = id;
+                        id++;
+
+                        ResolveFileType(stream, file);
+
+                        files.Add(file);
+
+                        while (endings.Count > 0 && stream.Position == endings.Last())
+                        {
+                            dirs.Remove(dirs.Last());
+                            endings.Remove(endings.Last());
+                        }
+                    }
+                    else if (fileGroupId > 0)
+                    {
+                        var dir = new EdataDir(this);
+
+                        stream.Read(buffer, 0, 4);
+                        dir.FileEntrySize = BitConverter.ToInt32(buffer, 0);
+
+                        if (dir.FileEntrySize != 0)
+                            endings.Add(dir.FileEntrySize + stream.Position - 8);
+                        else if (endings.Count > 0)
+                            endings.Add(endings.Last());
+
+                        dir.Name = Utils.ReadString(stream);
+
+                        if ((dir.Name.Length + 1) % 2 == 1)
+                            stream.Seek(1, SeekOrigin.Current);
 
                         dirs.Add(dir);
                     }
@@ -439,6 +587,25 @@ namespace IrisZoomDataApi
             }
             bitmap = null;
             return false;
+        }
+
+        public EdataManager ReadPackage(string file)
+        {
+            EdataContentFile contentfile = Files.Find(x => x.Path == file);
+
+            if (contentfile != null)
+            {
+                try
+                {
+                    byte[] data = GetRawData(contentfile);
+                    return ParseRawData(data);
+                }
+                catch
+                {
+
+                }
+            }
+            return null;
         }
 
     }
