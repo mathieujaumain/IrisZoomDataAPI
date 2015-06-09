@@ -34,9 +34,11 @@ To Enohka and Hob and all those that directly and indirectly participated in the
 
 Ri... Fork of :
 https://github.com/enohka/moddingSuite
+
 Meaning, it's basically the same data model cleansed from that VMMV nonsense and powered by some nasty helper methods. :D
 
 ###What's next :
 
 TGV (Eugen's-I think- texture file) to png queries (very soon :>)
+
 Sounds (ess files) queries (probably never)
