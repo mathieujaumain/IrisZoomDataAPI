@@ -38,6 +38,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,8 +47,21 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BL\Compressing\Compressing.cs" />
+    <Compile Include="BL\DDS\DDS.cs" />
+    <Compile Include="BL\DDS\FourCC.cs" />
+    <Compile Include="BL\DDS\PixelFormats.cs" />
     <Compile Include="BL\EdataManager.cs" />
+    <Compile Include="BL\ImageService\BlockDXT\AlphaBlockDXT5.cs" />
+    <Compile Include="BL\ImageService\BlockDXT\BlockDXT1.cs" />
+    <Compile Include="BL\ImageService\BlockDXT\BlockDXT5.cs" />
+    <Compile Include="BL\ImageService\Color16.cs" />
+    <Compile Include="BL\ImageService\Color32.cs" />
+    <Compile Include="BL\ImageService\ColorBlock.cs" />
+    <Compile Include="BL\ImageService\RawImage.cs" />
     <Compile Include="BL\NdfbinManager.cs" />
+    <Compile Include="BL\TGV\TGVBitmapReader.cs" />
+    <Compile Include="BL\TGV\TGVReader.cs" />
     <Compile Include="Model\Ndfbin\NdfQueryReader.cs" />
     <Compile Include="BL\TradManager.cs" />
     <Compile Include="Compressing\Compressing.cs" />
@@ -95,6 +109,8 @@
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfWideString.cs" />
     <Compile Include="Model\Ndfbin\Types\NdfType.cs" />
     <Compile Include="Model\Ndfbin\Types\NdfTypeManager.cs" />
+    <Compile Include="Model\Texture\TgvFile.cs" />
+    <Compile Include="Model\Texture\TgvMipMap.cs" />
     <Compile Include="Model\Trad\TradEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Utils.cs" />
@@ -105,6 +121,7 @@
   <ItemGroup>
     <Content Include="dll\Ionic.Zlib.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

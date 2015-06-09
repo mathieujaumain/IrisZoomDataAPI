@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Linq;
+using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using IrisZoomDataApi;
 using IrisZoomDataApi.Model.Ndfbin;
+using IrisZoomDataApi.Model.Edata;
+using IrisZoomDataApi.Model.Texture;
+using IrisZoomDataApi.BL.ImageService;
+using IrisZoomDataApi.BL.TGV;
 using IrisZoomDataApi.Model.Trad;
 using IrisZoomDataApi.Model.Ndfbin.Types.AllTypes;
 
@@ -132,6 +138,25 @@ namespace Tests
             string output = string.Empty;
             Assert.IsTrue(trad.TryGetString(refef.Value, out output)); // get LOSAT's description
 
+        }
+        [TestMethod]
+        public void  ExportTGV()
+        {
+            EdataManager manager = new EdataManager(@"C:\Users\mja\Documents\perso\mods\commoninterface.ppk");
+            manager.ParseEdataFile();
+
+            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\us\javelin_at_soldier.tgv";
+            EdataContentFile contentfile = manager.Files.First(x => x.Path == filename);
+
+
+            TgvReader reader = new TgvReader();
+            byte[] tgvdata = manager.GetRawData(contentfile);
+            TgvFile tgv = reader.Read(tgvdata);
+
+            TgvBitmapReader bitreader = new TgvBitmapReader();
+            RawImage image = bitreader.GetMip(tgv, 0);
+            Bitmap bitmap = image.GetBitmap();
+            bitmap.Save("bitmap.png");
         }
     }
 }

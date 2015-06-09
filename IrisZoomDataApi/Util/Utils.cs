@@ -8,6 +8,31 @@ namespace IrisZoomDataApi.Util
 {
     public static class Utils
     {
+
+        public static T ByteArrayToStructure<T>(byte[] bytes) where T : struct
+        {
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            var stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            handle.Free();
+
+            return stuff;
+        }
+
+        public static void Swap<T>(T a, T b)
+        {
+            T temp = a;
+            a = b;
+            b = temp;
+        }
+
+        public static int RoundToNextDivBy4(int number)
+        {
+            while (number % 4 != 0)
+                number++;
+
+            return number;
+        }
+
         public static string ReadString(Stream fs)
         {
             var b = new StringBuilder();
@@ -72,6 +97,28 @@ namespace IrisZoomDataApi.Util
             {
                 arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
             }
+
+            return arr;
+        }
+
+        public static bool IsValueType(object obj)
+        {
+            return obj != null && obj.GetType().IsValueType;
+        }
+
+
+        public static byte[] StructToBytes(object str)
+        {
+            if (!IsValueType(str))
+                throw new ArgumentException("str");
+
+            int size = Marshal.SizeOf(str);
+            byte[] arr = new byte[size];
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.StructureToPtr(str, ptr, true);
+            Marshal.Copy(ptr, arr, 0, size);
+            Marshal.FreeHGlobal(ptr);
 
             return arr;
         }
