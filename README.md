@@ -29,6 +29,8 @@ Of course, that suppose you know the data model, so it's always best to have eno
 
 By the way, NbfNul and NdfUnset are treated as null value. Because I decided so.
 
+Examples are avaible in the test project.
+
 ###Thanks
 To Enohka and Hob and all those that directly and indirectly participated in the moddingSuite project.
 
