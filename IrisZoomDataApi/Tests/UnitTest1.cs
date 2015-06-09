@@ -140,23 +140,15 @@ namespace Tests
 
         }
         [TestMethod]
-        public void  ExportTGV()
+        public void  LoadTGV()
         {
             EdataManager manager = new EdataManager(@"C:\Users\mja\Documents\perso\mods\commoninterface.ppk");
             manager.ParseEdataFile();
 
             string filename = @"pc\texture\assets\2d\interface\common\unitsicons\us\javelin_at_soldier.tgv";
-            EdataContentFile contentfile = manager.Files.First(x => x.Path == filename);
-
-
-            TgvReader reader = new TgvReader();
-            byte[] tgvdata = manager.GetRawData(contentfile);
-            TgvFile tgv = reader.Read(tgvdata);
-
-            TgvBitmapReader bitreader = new TgvBitmapReader();
-            RawImage image = bitreader.GetMip(tgv, 0);
-            Bitmap bitmap = image.GetBitmap();
-            bitmap.Save("bitmap.png");
+            Bitmap bitmap = null;
+            Assert.IsTrue(manager.TryToExportTgv(filename, out bitmap));
+            Assert.IsNotNull(bitmap);
         }
     }
 }

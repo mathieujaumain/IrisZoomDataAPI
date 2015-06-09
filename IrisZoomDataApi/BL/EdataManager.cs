@@ -6,6 +6,10 @@ using System.Security.Cryptography;
 using System.Text;
 using IrisZoomDataApi.Model.Edata;
 using IrisZoomDataApi.Util;
+using IrisZoomDataApi.BL.TGV;
+using IrisZoomDataApi.Model.Texture;
+using IrisZoomDataApi.BL.ImageService;
+using System.Drawing;
 
 namespace IrisZoomDataApi
 {
@@ -406,6 +410,35 @@ namespace IrisZoomDataApi
             EdataContentFile thisFile = Files.Find(x => x.Path == fileName);
             if (thisFile == null) throw new Exception("No content file has that name in these data : " + fileName);
             return new TradManager(GetRawData(thisFile));
+        }
+
+        /// <summary>
+        /// Load the first Mip Map from a Tgv file as a System.Drawing.Bitmap object
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="save"></param>
+        /// <returns></returns>
+        public bool TryToLoadTgv(string file, out Bitmap bitmap)
+        {
+            EdataContentFile contentfile = Files.Find(x => x.Path == file);
+
+            if (contentfile != null)
+            {
+                try
+                {
+                    byte[] tgvdata = GetRawData(contentfile);
+                    TgvFile tgv = new TgvReader().Read(tgvdata);
+                    RawImage image = new TgvBitmapReader().GetMip(tgv, 0);
+                    bitmap = image.GetBitmap();
+                    return true;
+                }
+                catch
+                {
+                 
+                }
+            }
+            bitmap = null;
+            return false;
         }
 
     }
