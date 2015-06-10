@@ -96,7 +96,7 @@ namespace Tests
             datamana.ParseEdataFile();
             NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
             NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
-            NdfObject obj = claass.Instances[0];
+            NdfObject obj = claass.Instances[1];
             NdfObjectReference refef;
 
             string query = "Modules.TypeUnit.Default";
@@ -131,7 +131,6 @@ namespace Tests
             string query = "Modules.TypeUnit.Default.DescriptionHintToken";
             Assert.IsTrue(obj.TryGetValueFromQuery<NdfLocalisationHash>(query, out refef));
             
-
             EdataManager dic = new EdataManager(trans);
             dic.ParseEdataFile();
             TradManager trad = dic.ReadDictionary(transFile);
@@ -145,9 +144,28 @@ namespace Tests
             EdataManager manager = new EdataManager(@"C:\Users\mja\Documents\perso\mods\commoninterface.ppk");
             manager.ParseEdataFile();
 
-            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\us\javelin_at_soldier.tgv";
+            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\cs\m8_losat_upb.tgv";
             Bitmap bitmap = null;
             Assert.IsTrue(manager.TryToLoadTgv(filename, out bitmap));
+            Assert.IsNotNull(bitmap);
+        }
+
+        [TestMethod]
+        public void LoadTGVFromZZ4()
+        {
+            string zz4 = @"C:\Users\mja\Documents\perso\mods\ZZ_4.dat";
+
+            EdataManager zz4File = new EdataManager(zz4);
+            zz4File.ParseEdataFile();
+
+            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\cs\m8_losat_upb.tgv";
+
+            string ICON_PACKAGE = @"pc\texture\pack\commoninterface.ppk";
+            EdataManager pack = zz4File.ReadPackage(ICON_PACKAGE);
+
+
+            Bitmap bitmap = null;
+            Assert.IsTrue(pack.TryToLoadTgv(filename, out bitmap));
             Assert.IsNotNull(bitmap);
         }
     }

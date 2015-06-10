@@ -286,14 +286,14 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
 
            // verify next is in the from "[ i ]"
            bool isIndex = false;
-            string[] parts = next.Split(new string[] { "[", "]" }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 1)
+            string[] parts = next.Split(new string[] { "[", "]" }, StringSplitOptions.None);
+            if (parts.Length == 3)
             {
                 isIndex = true;
             }
 
             long index = -1;
-            if (isIndex && long.TryParse(parts[0], out index))
+            if (isIndex && long.TryParse(parts[1], out index))
             {
                 NdfValueWrapper val = null;
 

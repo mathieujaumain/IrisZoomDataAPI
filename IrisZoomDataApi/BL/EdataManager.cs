@@ -46,6 +46,15 @@ namespace IrisZoomDataApi
             protected set;
         }
 
+        /// <summary>
+        /// The data the current package holds.
+        /// </summary>
+        public byte[] Data
+        {
+            get;
+            protected set;
+        }
+
 
         /// <summary>
         /// Creates a new Instance of a EdataManager.
@@ -88,6 +97,31 @@ namespace IrisZoomDataApi
         }
 
         /// <summary>
+        /// Reads the raw data of a file inside the current package.
+        /// </summary>
+        /// <param name="ofFile">A EdataFile of the current manager</param>
+        /// <returns>The data of the desired EdataFile.</returns>
+        public byte[] GetContentFileRawData(EdataContentFile ofFile)
+        {
+            if (ofFile.Manager != this)
+                throw new ArgumentException("oFile must be created by this instance of EdataManager");
+
+            byte[] buffer;
+            
+            using (MemoryStream stream = new MemoryStream(Data, false))
+            {
+                long offset = Header.FileOffset + ofFile.Offset;
+                stream.Seek(offset, SeekOrigin.Begin);
+
+                buffer = new byte[ofFile.Size];
+                stream.Read(buffer, 0, buffer.Length);
+            }
+
+            return buffer;
+        }
+
+
+        /// <summary>
         /// Initiates the parsing of the current Edata file.
         /// </summary>
         public void ParseEdataFile()
@@ -104,6 +138,7 @@ namespace IrisZoomDataApi
             EdataManager result = new EdataManager();
             result.Header = result.ReadEdataHeader(rawdata);
             result.Files = result.ReadEdatDictionary(rawdata);
+            result.Data = rawdata;
 
             return result;
         }
@@ -574,7 +609,7 @@ namespace IrisZoomDataApi
             {
                 try
                 {
-                    byte[] tgvdata = GetRawData(contentfile);
+                    byte[] tgvdata = GetContentFileRawData(contentfile);
                     TgvFile tgv = new TgvReader().Read(tgvdata);
                     RawImage image = new TgvBitmapReader().GetMip(tgv, 0);
                     bitmap = image.GetBitmap();
@@ -597,8 +632,7 @@ namespace IrisZoomDataApi
             {
                 try
                 {
-                    byte[] data = GetRawData(contentfile);
-                    return ParseRawData(data);
+                   return  ParseRawData(GetRawData(contentfile));
                 }
                 catch
                 {
