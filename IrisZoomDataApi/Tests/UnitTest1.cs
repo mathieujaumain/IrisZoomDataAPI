@@ -128,7 +128,7 @@ namespace Tests
             NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
             NdfObject obj = claass.Instances[1];
             NdfLocalisationHash refef;
-            string query = "Modules[0].Default.DescriptionHintToken";
+            string query = "Modules.TypeUnit.Default.DescriptionHintToken";
             Assert.IsTrue(obj.TryGetValueFromQuery<NdfLocalisationHash>(query, out refef));
             
 

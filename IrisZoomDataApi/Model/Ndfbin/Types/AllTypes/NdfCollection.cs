@@ -287,7 +287,7 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
            // verify next is in the from "[ i ]"
            bool isIndex = false;
             string[] parts = next.Split(new string[] { "[", "]" }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 0)
+            if (parts.Length > 1)
             {
                 isIndex = true;
             }
@@ -339,8 +339,35 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
                     NdfMap mapVal = selectedmap as NdfMap;
                     MapValueHolder valholder = mapVal.Value as MapValueHolder;
 
-                    value = valholder.Value;
-                    return true;
+                    NdfValueWrapper val = valholder.Value;
+
+                    switch (val.Type)
+                    {
+                        case NdfType.ObjectReference:
+                            NdfObjectReference reference = val as NdfObjectReference;
+                            return reference.Instance.TryGetValueFromQuery(rest, out value);
+
+                        case NdfType.MapList:
+                            NdfMapList mapList = val as NdfMapList;
+                            return mapList.TryGetValueFromQuery(rest, out value);
+
+                        case NdfType.List:
+                            NdfCollection list = val as NdfCollection;
+                            return list.TryGetValueFromQuery(rest, out value);
+
+                        case NdfType.Map:
+                            NdfMap map = val as NdfMap;
+                            return map.TryGetValueFromQuery(rest, out value);
+
+                        case Types.NdfType.Unknown:
+                            break;
+                        case Types.NdfType.Unset:
+                            break;
+
+                        default:
+                            value = val;
+                            return true;
+                    }
                 }
                 catch { value = null; return false; }
             }
