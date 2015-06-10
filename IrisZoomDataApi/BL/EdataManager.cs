@@ -107,14 +107,27 @@ namespace IrisZoomDataApi
                 throw new ArgumentException("oFile must be created by this instance of EdataManager");
 
             byte[] buffer;
-            
-            using (MemoryStream stream = new MemoryStream(Data, false))
+            if(string.IsNullOrEmpty(FilePath))
             {
-                long offset = Header.FileOffset + ofFile.Offset;
-                stream.Seek(offset, SeekOrigin.Begin);
+                using (MemoryStream stream = new MemoryStream(Data, false))
+                {
+                    long offset = Header.FileOffset + ofFile.Offset;
+                    stream.Seek(offset, SeekOrigin.Begin);
 
-                buffer = new byte[ofFile.Size];
-                stream.Read(buffer, 0, buffer.Length);
+                    buffer = new byte[ofFile.Size];
+                    stream.Read(buffer, 0, buffer.Length);
+                }
+            }
+            else
+            {
+                using (var fs = new FileStream(FilePath, FileMode.Open ))
+                {
+                    long offset = Header.FileOffset + ofFile.Offset;
+                    fs.Seek(offset, SeekOrigin.Begin);
+
+                    buffer = new byte[ofFile.Size];
+                    fs.Read(buffer, 0, buffer.Length);
+                }
             }
 
             return buffer;

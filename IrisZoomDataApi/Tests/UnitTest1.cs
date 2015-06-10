@@ -144,10 +144,11 @@ namespace Tests
             EdataManager manager = new EdataManager(@"C:\Users\mja\Documents\perso\mods\commoninterface.ppk");
             manager.ParseEdataFile();
 
-            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\cs\m8_losat_upb.tgv";
+            string filename = @"pc\texture\assets\2d\interface\common\unitsicons\us\stryker_icv_upgrade_1.tgv";
             Bitmap bitmap = null;
             Assert.IsTrue(manager.TryToLoadTgv(filename, out bitmap));
             Assert.IsNotNull(bitmap);
+            bitmap.Save("Unit2.png");
         }
 
         [TestMethod]
@@ -167,6 +168,7 @@ namespace Tests
             Bitmap bitmap = null;
             Assert.IsTrue(pack.TryToLoadTgv(filename, out bitmap));
             Assert.IsNotNull(bitmap);
+            bitmap.Save("Unit.png");
         }
     }
 }
