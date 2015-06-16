@@ -147,6 +147,13 @@ namespace IrisZoomDataApi.Model.Ndfbin
             if (TryGetValueFromQuery(query, out val))
             {
                 value = val as T;
+                if(val.Type == Types.NdfType.Map)
+                {
+                    NdfMap map = val as NdfMap;
+                    MapValueHolder mapval = map.Value as MapValueHolder;
+                    value = mapval.Value as T;
+                }
+                
                 if (value != null)
                     return true;
             }

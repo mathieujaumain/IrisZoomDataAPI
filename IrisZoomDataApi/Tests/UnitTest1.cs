@@ -23,6 +23,7 @@ namespace Tests
         
         string trans = @"C:\Users\mja\Documents\perso\mods\ZZ_Win.dat";
         string transFile = "pc\\localisation\\us\\localisation\\unites.dic";
+        public static string UNIT_REA_COST = "Modules.Production.Default.ProductionRessourcesNeeded.14";
 
 
         [TestMethod]
@@ -138,6 +139,21 @@ namespace Tests
             Assert.IsTrue(trad.TryGetString(refef.Value, out output)); // get LOSAT's description
 
         }
+
+        [TestMethod]
+        public void ReadCost()
+        {
+            EdataManager datamana = new EdataManager(ndffile);
+
+            datamana.ParseEdataFile();
+            NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
+            NdfClass claass = ndfbin.GetClass("TUniteDescriptor");
+            NdfObject obj = claass.Instances[1];
+            NdfUInt32 refef;
+            Assert.IsTrue(obj.TryGetValueFromQuery<NdfUInt32>(UNIT_REA_COST, out refef));
+
+        }
+
         [TestMethod]
         public void  LoadTGV()
         {

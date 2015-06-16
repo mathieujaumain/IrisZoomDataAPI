@@ -40,27 +40,33 @@ namespace IrisZoomDataApi.Model.Ndfbin.Types.AllTypes
             return data.ToArray();
         }
 
-        private NdfStringReference FromItem2StringRef(NdfValueWrapper val)
+        private string FromItemKey2String(NdfValueWrapper val) // Must change, since all key are not necess stringreferences
         {
             NdfMap map = val as NdfMap;
-            return ((NdfString)map.Key.Value).Value as NdfStringReference; // Bleh
+
+            switch (map.Key.Value.Type) 
+            { 
+                case NdfType.UInt32:
+                    return ((NdfUInt32)map.Key.Value).ToString();
+                    
+                case NdfType.TableString:
+                    return ((NdfString)map.Key.Value).ToString();
+
+                case NdfType.WideString:
+                    return ((NdfWideString)map.Key.Value).ToString();
+
+                default: return string.Empty;
+            }
+
+            //return ((NdfString)map.Key.Value).Value as NdfStringReference; // Bleh
         }
+
 
         public NdfMap GetMap(string key)
         {
-
-            NdfMap map;
-            try
-            {
-                map = InnerList.First(x => FromItem2StringRef(x.Value).Value == key).Value as NdfMap;
-            }
-            catch
-            {
-                map = null;
-            }
-
-            return map;
+            return InnerList.Find(x => FromItemKey2String(x.Value) == key).Value as NdfMap;
         }
+
 
         public bool TryGetMap(string key, out NdfMap value)
         {
