@@ -24,6 +24,7 @@ namespace Tests
         string trans = @"C:\Users\mja\Documents\perso\mods\ZZ_Win.dat";
         string transFile = "pc\\localisation\\us\\localisation\\unites.dic";
         public static string UNIT_REA_COST = "Modules.Production.Default.ProductionRessourcesNeeded.14";
+        public static string UNIT_ICON = "Modules.TypeUnit.Default.TextureForInterface.FileName";
 
 
         [TestMethod]
@@ -81,12 +82,10 @@ namespace Tests
             datamana.ParseEdataFile();
             NdfbinManager ndfbin = datamana.ReadNdfbin(ndfbinfile);
             NdfClass claass = ndfbin.GetClass(className);
-            NdfObject obj = claass.Instances[0];
+            NdfObject obj = claass.Instances[1];
 
-            NdfUInt32 uint32;
-            obj.TryGetValueFromQuery<NdfUInt32>(property, out uint32);
-
-            Assert.IsTrue(obj.TryGetValueFromQuery<NdfUInt32>(property, out uint32));
+            NdfString uint32;
+            obj.TryGetValueFromQuery<NdfString>(UNIT_ICON, out uint32);
         }
 
         [TestMethod]
@@ -184,7 +183,7 @@ namespace Tests
             Bitmap bitmap = null;
             Assert.IsTrue(pack.TryToLoadTgv(filename, out bitmap));
             Assert.IsNotNull(bitmap);
-            bitmap.Save("Unit.png");
+            bitmap.Save("UnitDXT1.png");
         }
     }
 }

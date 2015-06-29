@@ -12,3 +12,5 @@ IrisZoomDataApi/Tests/bin/*
 *.pdb
 IrisZoomDataApi/Tests/bin/Debug/Tests.dll
 *.pdb
+*.pdb
+*.dll

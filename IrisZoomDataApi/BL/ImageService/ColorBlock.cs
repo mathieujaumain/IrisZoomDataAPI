@@ -197,11 +197,14 @@ namespace IrisZoomDataApi.BL.ImageService
         /// Return true if the block is not fully opaque.
         bool hasAlpha()
         {
+            return Data.Any(x => x.a != 255);
+            /*
             for (uint i = 0; i < 16; i++)
             {
                 if (Data[i].a != 255) return true;
             }
             return false;
+             * */
         }
 
         /// Get diameter color range.

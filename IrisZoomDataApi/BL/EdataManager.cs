@@ -637,6 +637,36 @@ namespace IrisZoomDataApi
             return false;
         }
 
+
+        /// <summary>
+        /// Load the first Mip Map from a Tgv file as a System.Drawing.Bitmap object
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="save"></param>
+        /// <returns></returns>
+        public bool TryToLoadDXT1Tgv(string file, out Bitmap bitmap)
+        {
+            EdataContentFile contentfile = Files.Find(x => x.Path == file);
+
+            if (contentfile != null)
+            {
+                try
+                {
+                    byte[] tgvdata = GetContentFileRawData(contentfile);
+                    TgvFile tgv = new TgvReader().Read(tgvdata);
+                    RawImage image = new TgvBitmapReader().GetDXT1Mip(tgv, 0);
+                    bitmap = image.GetBitmap();
+                    return true;
+                }
+                catch
+                {
+
+                }
+            }
+            bitmap = null;
+            return false;
+        }
+
         public EdataManager ReadPackage(string file)
         {
             EdataContentFile contentfile = Files.Find(x => x.Path == file);

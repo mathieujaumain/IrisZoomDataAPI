@@ -191,6 +191,27 @@ namespace IrisZoomDataApi.BL.ImageService.BlockDXT
             }
         }
 
+        public void decodeBlock(ref ColorBlock block)
+        {
+            if (block == null)
+                throw new ArgumentNullException("block");
+
+            // Decode color block.
+            Color32[] color_array = { new Color32(), new Color32(), new Color32(), new Color32() };
+            evaluatePalette(ref color_array);
+
+            // Write color block.
+            for (uint j = 0; j < 4; j++)
+            {
+                for (uint i = 0; i < 4; i++)
+                {
+                    uint idx = ((uint)row(j) >> (ushort)(2 * i)) & 3;
+                    block.Data[j * 4 + i] = color_array[idx];
+                }
+            }
+        }
+
+
         public void setIndices(int[] idx)
         {
             indices = 0;

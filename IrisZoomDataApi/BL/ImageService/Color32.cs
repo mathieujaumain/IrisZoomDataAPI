@@ -93,7 +93,7 @@ namespace IrisZoomDataApi.BL.ImageService
 
         public Color ToColor()
         {
-            return Color.FromArgb(255, (int)b, (int)g, (int)r);
+            return Color.FromArgb(0xFF, (int)b, (int)g, (int)r);
         }
     }
 }
